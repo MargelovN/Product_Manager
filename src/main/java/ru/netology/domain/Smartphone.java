@@ -3,7 +3,6 @@ import lombok.Data;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.EqualsAndHashCode;
-import ru.netology.domain.Product;
 
 @Data
 @AllArgsConstructor

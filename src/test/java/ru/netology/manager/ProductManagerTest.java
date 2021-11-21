@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import ru.netology.domain.Book;
 import ru.netology.domain.Product;
 import ru.netology.domain.Smartphone;
+
 import ru.netology.repository.ProductRepository;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,10 +19,10 @@ class ProductManagerTest {
 
     @BeforeEach
     void setUp() {
-        repository.save(item1);
-        repository.save(item2);
-        repository.save(item3);
-        repository.save(item4);
+        manager.add(item1);
+        manager.add(item2);
+        manager.add(item3);
+        manager.add(item4);
     }
 
     @Test
@@ -39,7 +40,7 @@ class ProductManagerTest {
     }
 
     @Test
-    public void shouldSearchByBookTtile() {
+    public void shouldSearchByBookTitle() {
         Product[] expected = new Product[]{item2};
         Product[] actual = manager.searchBy("Poker with a Shark");
         assertArrayEquals(expected, actual);
@@ -63,6 +64,43 @@ class ProductManagerTest {
     public void shouldSearchByPhoneBrand() {
         Product[] expected = new Product[]{item4};
         Product[] actual = manager.searchBy("Nokia");
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldSeacrhById() {
+        Product actual = repository.findById(1);
+        Product expected = item1;
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldSearchByWrongId() {
+        Product actual = repository.findById(6);
+        assertNull(actual);
+    }
+
+    @Test
+    public void shouldRemoveById() {
+        repository.removeById(1);
+        Product[] actual = repository.findAll();
+        Product[] expected = {
+                item2,
+                item3,
+                item4,
+        };
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldRemoveByWrongId() {
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> repository.removeById(5));
+    }
+
+    @Test
+    public void shouldSearchByBrandWithoutResult() {
+        Product[] expected = {};
+        Product[] actual = manager.searchBy("Lenovo");
         assertArrayEquals(expected, actual);
     }
 }
