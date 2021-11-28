@@ -7,15 +7,17 @@ import ru.netology.domain.Product;
 import ru.netology.domain.Smartphone;
 
 import ru.netology.repository.ProductRepository;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ProductManagerTest {
     private ProductRepository repository = new ProductRepository();
     ProductManager manager = new ProductManager(repository);
     private Product item1 = new Book(1, 1000, "Lewis Carroll", "Alice in Wonderland");
-    private Product item2 = new Book(2, 118, "Darya Dontsova", "Poker with a Shark");
+    private Product item2 = new Book(2, 118, "Darya Dontsova", "Apple");
     private Product item3 = new Smartphone(3, 119999, "Apple", "13 Pro Max");
     private Product item4 = new Smartphone(4, 1999, "Nokia", "3310");
+    private Product item5 = new Product(5, 1000, "Something");
 
     @BeforeEach
     void setUp() {
@@ -23,11 +25,12 @@ class ProductManagerTest {
         manager.add(item2);
         manager.add(item3);
         manager.add(item4);
+        manager.add(item5);
     }
 
     @Test
     public void shouldGetAll() {
-        Product[] expected = new Product[]{item1, item2, item3, item4};
+        Product[] expected = new Product[]{item1, item2, item3, item4, item5};
         Product[] actual = manager.getAll();
         assertArrayEquals(expected, actual);
     }
@@ -41,8 +44,8 @@ class ProductManagerTest {
 
     @Test
     public void shouldSearchByBookTitle() {
-        Product[] expected = new Product[]{item2};
-        Product[] actual = manager.searchBy("Poker with a Shark");
+        Product[] expected = new Product[]{item1};
+        Product[] actual = manager.searchBy("Alice in Wonderland");
         assertArrayEquals(expected, actual);
     }
 
@@ -88,19 +91,27 @@ class ProductManagerTest {
                 item2,
                 item3,
                 item4,
+                item5,
         };
         assertArrayEquals(expected, actual);
     }
 
     @Test
     public void shouldRemoveByWrongId() {
-        assertThrows(ArrayIndexOutOfBoundsException.class, () -> repository.removeById(5));
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> repository.removeById(7));
     }
 
     @Test
     public void shouldSearchByBrandWithoutResult() {
         Product[] expected = {};
         Product[] actual = manager.searchBy("Lenovo");
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldTwoMatchesBookSmartphone() {
+        Product[] actual = manager.searchBy("Apple");
+        Product[] expected = new Product[]{item2, item3};
         assertArrayEquals(expected, actual);
     }
 }
